@@ -1,0 +1,37 @@
+.form-card, .table-card {
+    margin-bottom: 25px;
+}
+
+.form-grid-2col {
+    display: flex;
+    gap: 20px;
+}
+
+.form-column {
+    flex: 1;
+}
+
+.form-actions.full-width {
+    flex: 0 0 100%; 
+    text-align: center;
+    margin-top: 10px;
+}
+
+.final-actions {
+    text-align: right;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.modal-content.small-modal {
+    max-width: 450px;
+    text-align: center;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}

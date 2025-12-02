@@ -1,0 +1,74 @@
+<section id="gestion-albaranes-view" class="main-content-section">
+    <h2>📄 Gestión de Albaranes de Recepción</h2>
+    
+    <div class="list-controls document-controls">
+        <button id="btn-nuevo-albaran" class="btn-primary">➕ Registrar Albarán</button>
+        
+        <div class="search-group">
+            <select id="filtro-albaranes-mes">
+                <option value="">Filtrar por Mes</option>
+                <!-- Opciones de meses se cargarán con JS (Enero, Febrero, etc.) -->
+            </select>
+            <input type="text" id="filtro-albaranes-ref" placeholder="Buscar por Ref. o Pedido Asociado">
+            <button id="btn-aplicar-filtro-albaran" class="btn-secondary">Buscar</button>
+        </div>
+    </div>
+    
+    <!-- Listado principal de Albaranes -->
+    <table id="albaranes-list-table" class="data-table">
+        <thead>
+            <tr>
+                <th>Referencia</th>
+                <th>Fecha Recepción</th>
+                <th>Pedido Asociado</th>
+                <th>Artículos Recibidos</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Los albaranes se cargarán aquí con JS -->
+        </tbody>
+    </table>
+</section>
+
+<!-- MODAL DE DETALLE Y ACCIÓN PARA ALBARANES (Igual formato que Pedidos) -->
+<div id="albaran-detalle-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content large-modal">
+        <span class="close-button">&times;</span>
+        <h3 id="albaran-modal-title">Detalle del Albarán #<span id="albaran-ref-display-modal">A123</span></h3>
+        
+        <!-- Contenido Fijo / Estático -->
+        <div id="albaran-detalle-estatico">
+            <p><strong>Pedido Asociado:</strong> <span id="albaran-pedido-ref"></span></p>
+            <p><strong>Fecha Recepción:</strong> <span id="albaran-fecha"></span></p>
+            <p><strong>Observaciones:</strong> <span id="albaran-observaciones"></span></p>
+
+            <h4>Artículos Recibidos</h4>
+            <table id="tabla-albaranes" class="modal-data-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad Recibida</th>
+                        <th>Estado de Inspección</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Artículos del albarán se cargan aquí -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Formulario de Edición (Oculto por defecto, se activa con el botón Modificar) -->
+        <form id="albaran-modificar-form" style="display: none;">
+            <!-- Campos para modificar los detalles del albarán -->
+            <p class="text-xs text-muted">**Aquí se cargarían los campos para modificar las cantidades o el estado de inspección**</p>
+            <button type="submit" class="btn-success">Guardar Modificaciones</button>
+        </form>
+
+        <div class="modal-actions">
+            <button id="btn-modificar-albaran" class="btn-primary">✏️ Modificar</button>
+            <button id="btn-descargar-pdf-albaran" class="btn-secondary">⬇️ Descargar PDF</button>
+        </div>
+    </div>
+</div>

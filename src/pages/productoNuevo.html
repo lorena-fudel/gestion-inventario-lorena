@@ -1,0 +1,113 @@
+<link rel="stylesheet" href="/assets/css/productoNuevo.css">
+<section id="registro-productos-view" class="main-content-section">
+    <h2>Registro Masivo de Nuevos Productos</h2>
+
+
+    <!-- implementar: necesitas <select id="select-categoria"> y <select id="select-proveedor">. -->
+    
+    <div class="card form-card">
+        <h3>Datos del Nuevo Producto</h3>
+        
+        <form id="form-nuevo-producto" class="form-grid-2col">
+
+            <!-- Columna 1: Datos del Producto -->
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="new-producto-id">ID del Producto (Auto-Incremental)</label>
+                    <!-- Este campo es solo informativo, el valor real se asignará en JS -->
+                    <input type="text" id="new-producto-id" value="Pendiente..." disabled> 
+                </div>
+                <div class="form-group">
+                <label>Categoría:</label>
+                <select id="select-categoria" name="categoriaId" class="form-control">
+                    <option value="1">Cargando...</option>
+                </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Proveedor:</label>
+                    <select id="select-proveedor" name="proveedorId" class="form-control">
+                        <option value="1">Cargando...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="new-producto-nombre">Nombre del Producto</label>
+                    <input type="text" id="new-producto-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-producto-precio">Precio Unitario (€)</label>
+                    <input type="number" id="new-producto-precio" required min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="new-producto-fecha">Fecha de Creación</label>
+                    <input type="date" id="new-producto-fecha" required>
+                </div>
+            </div>
+
+            <!-- Columna 2: Datos del Proveedor (simplificados para el registro) -->
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="new-producto-proveedor-nombre">Nombre del Proveedor</label>
+                    <input type="text" id="new-producto-proveedor-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-producto-proveedor-email">Email del Proveedor</label>
+                    <input type="email" id="new-producto-proveedor-email">
+                </div>
+                <div class="form-group">
+                    <label for="new-producto-proveedor-telefono">Teléfono del Proveedor</label>
+                    <input type="tel" id="new-producto-proveedor-telefono">
+                </div>
+                <div class="form-group">
+                    <label for="new-producto-proveedor-direccion">Dirección del Proveedor</label>
+                    <input type="text" id="new-producto-proveedor-direccion">
+                </div>
+            </div>
+            
+            <div class="form-actions full-width">
+                <button type="button" id="btn-anadir-a-tabla" class="btn-primary">➕ Añadir a la Lista Temporal</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLA TEMPORAL DE PRODUCTOS A REGISTRAR -->
+    <div class="card table-card">
+        <h3>Productos Pendientes de Registro (<span id="contador-productos-temp">0</span>)</h3>
+        
+        <table id="productos-temp-table" class="data-table">
+            <thead>
+                <tr>
+                    <th>ID Temp.</th>
+                    <th>Nombre</th>
+                    <th>Precio (€)</th>
+                    <th>Proveedor</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los productos se añadirán temporalmente aquí con JS -->
+            </tbody>
+        </table>
+        
+        <div class="final-actions">
+            <button id="btn-registrar-productos" class="btn-success" disabled>
+                💾 Registrar TODOS los Productos (Enviar a DB)
+            </button>
+        </div>
+        
+    </div>
+    
+    <!-- MODAL DE CONFIRMACIÓN DE BORRADO (Usado por el botón "Borrar Producto") -->
+    <div id="delete-confirmation-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content small-modal">
+            <h3>Confirmar Borrado</h3>
+            <p>⚠️ ¿Estás seguro de que deseas **eliminar definitivamente** el producto temporal seleccionado?</p>
+            <div class="modal-actions">
+                <button id="btn-confirmar-borrado" class="btn-danger">Sí, Borrar</button>
+                <button id="btn-cancelar-borrado" class="btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+</section>

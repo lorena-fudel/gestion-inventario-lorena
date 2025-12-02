@@ -1,0 +1,105 @@
+<link rel="stylesheet" href="/assets/css/recepcionPedidos.css">
+<section id="recepcion-pedidos-view" class="main-content-section">
+    <h2>Recepción y Verificación de Mercancía</h2>
+    
+    <div class="split-layout">
+        
+        <!-- COLUMNA IZQUIERDA: LISTADO DE PEDIDOS PENDIENTES -->
+        <div class="list-section card">
+            <h3>Pedidos Pendientes por Recibir (Status: Abierto)</h3>
+            <div class="list-controls">
+                <input type="text" id="filtro-pedido-ref" placeholder="Filtrar por Referencia de Pedido">
+                <button id="btn-aplicar-filtro" class="btn-secondary">Filtrar</button>
+            </div>
+            
+            <table id="pedidos-pendientes-table" class="data-table">
+                <thead>
+                    <tr>
+                        <th>Referencia</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Artículos</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filas de pedidos pendientes se cargarán aquí con JS -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- COLUMNA DERECHA: SECCIÓN DE BÚSQUEDA Y COMPARACIÓN -->
+        <div class="comparison-section card">
+            <h3>Asociar y Comparar Documentos</h3>
+
+            <!-- 1. Formulario de Búsqueda de Pedido -->
+            <div class="form-group">
+                <label for="input-pedido-ref">Referencia de Pedido a Recibir</label>
+                <input type="text" id="input-pedido-ref" placeholder="Introduce Ref. de Pedido (P.ej: P001)" required>
+                <button id="btn-buscar-pedido" class="btn-primary-small">Buscar Pedido</button>
+            </div>
+            
+            <div id="pedido-seleccionado-info" class="info-box" style="display: none;">
+                <strong>Pedido Seleccionado: </strong> <span id="pedido-ref-display"></span>
+                <p class="text-xs">Usa el botón "Recibir/Verificar" para entrar los detalles de recepción.</p>
+            </div>
+
+            <hr class="separator">
+
+            <!-- 2. Formulario de Comparación con Albarán -->
+            <h4>Comparar con Albarán Recibido</h4>
+            <div class="form-group">
+                <label for="input-albaran-ref">Número de Albarán</label>
+                <input type="text" id="input-albaran-ref" placeholder="Introduce el Número de Albarán (P.ej: A123)" required>
+                <!-- Este botón activa la lógica de comparación -->
+                <button id="btn-comparar-albaran" class="btn-success-small">🔍 Comparar con Pedido</button>
+            </div>
+
+            <!-- 3. Resultados de la Comparación -->
+            <div id="comparacion-resultados" class="results-box">
+                <!-- La tabla de diferencias se mostrará aquí con JS -->
+                <p class="text-muted">Las diferencias entre el Pedido y el Albarán se listarán aquí.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MODAL PARA LA RECEPCIÓN DETALLADA DEL PEDIDO (Inicialmente oculto) -->
+<div id="recepcion-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h3>Recepción Detallada del Pedido: <span id="modal-pedido-ref"></span></h3>
+        
+        <form id="recepcion-form">
+            <input type="hidden" id="modal-albaran-id">
+            
+            <div class="form-group-horizontal">
+                <label for="modal-albaran-ref">Albarán Asociado:</label>
+                <input type="text" id="modal-albaran-ref" placeholder="Número de Albarán (Ej: A123)" required>
+            </div>
+
+            <!-- Tabla de Artículos del Pedido para Checkeo -->
+            <table id="modal-articulos-recepcion" class="modal-data-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cant. Pedida</th>
+                        <th>Cant. Recibida</th>
+                        <th>Estado</th>
+                        <th>Fecha/Hora Check</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los artículos del pedido se insertarán aquí con JS -->
+                </tbody>
+            </table>
+
+            <div class="form-group">
+                <label for="recepcion-observaciones">Observaciones</label>
+                <textarea id="recepcion-observaciones" rows="3" placeholder="Añade comentarios sobre la recepción."></textarea>
+            </div>
+
+            <button type="submit" class="btn-success">Guardar Recepción y Actualizar Stock</button>
+        </form>
+    </div>
+</div>
