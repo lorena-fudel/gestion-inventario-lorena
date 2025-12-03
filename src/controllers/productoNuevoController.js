@@ -1,113 +1,187 @@
 import { dataService } from '../services/dataService.js';
 
-let listaTemporal = []; // Array para guardar productos antes de enviar a DB
+let listaTemporal = [];
 
 export const productoNuevoController = async () => {
+    // --- Referencias al DOM ---
     const btnAgregar = document.getElementById('btn-anadir-a-tabla');
     const btnRegistrarDB = document.getElementById('btn-registrar-productos');
     const tablaTemp = document.querySelector('#productos-temp-table tbody');
     const contador = document.getElementById('contador-productos-temp');
 
-    // Referencias al formulario
+    // Inputs Producto
     const inputNombre = document.getElementById('new-producto-nombre');
     const inputPrecio = document.getElementById('new-producto-precio');
+    const selectCategoria = document.getElementById('select-categoria'); 
     
-    // NOTA: Para conectar con DB.json correctamente, deberías usar Selects para proveedor y categoría.
-    // Asumiremos que has añadido <select id="select-categoria"> en tu HTML como sugería el comentario.
-    const selectCategoria = document.getElementById('select-categoria'); // Asegúrate de agregarlo a tu HTML
-    const selectProveedor = document.getElementById('select-proveedor'); // Asegúrate de agregarlo a tu HTML
+    // Inputs Proveedor y Toggle
+    const selectProveedor = document.getElementById('select-proveedor');
+    const inputProvNombre = document.getElementById('new-prov-nombre');
+    const divExtraProv = document.getElementById('extra-prov-fields');
+    const btnToggleProv = document.getElementById('btn-toggle-new-prov');
+    
+    // Inputs Extra Proveedor
+    const inputProvEmail = document.getElementById('new-prov-email');
+    const inputProvTel = document.getElementById('new-prov-telefono');
+    const inputProvDir = document.getElementById('new-prov-direccion');
 
-    // Cargar selects si existen
-    if(selectCategoria && selectProveedor) {
+    // Estado: ¿Estamos creando un proveedor nuevo?
+    let isNewProvMode = false;
+
+    // --- 1. CARGAR DATOS INICIALES ---
+    if(selectCategoria) {
         const cats = await dataService.getCategorias();
-        const provs = await dataService.getProveedores();
-        
         selectCategoria.innerHTML = cats.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
-        selectProveedor.innerHTML = provs.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+    }
+    await cargarProveedoresEnSelect();
+
+    // --- 2. LÓGICA DEL BOTÓN "NUEVO / EXISTENTE" ---
+    if (btnToggleProv) {
+        btnToggleProv.addEventListener('click', () => {
+            isNewProvMode = !isNewProvMode; // Cambiar estado true/false
+
+            if (isNewProvMode) {
+                // Modo CREAR
+                selectProveedor.style.display = 'none';
+                inputProvNombre.style.display = 'block';
+                divExtraProv.style.display = 'block';
+                btnToggleProv.innerText = '📋 Listado';
+                btnToggleProv.classList.replace('btn-secondary', 'btn-primary');
+                inputProvNombre.focus();
+            } else {
+                // Modo SELECCIONAR
+                selectProveedor.style.display = 'block';
+                inputProvNombre.style.display = 'none';
+                divExtraProv.style.display = 'none';
+                btnToggleProv.innerText = '➕ Nuevo';
+                btnToggleProv.classList.replace('btn-primary', 'btn-secondary');
+            }
+        });
     }
 
-    // 1. Botón "Añadir a la Lista Temporal"
+    // --- 3. BOTÓN AÑADIR A LISTA TEMPORAL ---
     if (btnAgregar) {
-        btnAgregar.addEventListener('click', () => {
-            // Validación simple
+        btnAgregar.addEventListener('click', async () => {
+            // Validaciones básicas
             if (!inputNombre.value || !inputPrecio.value) {
-                alert('Faltan datos obligatorios (Nombre o Precio)');
+                alert('Falta el nombre o precio del producto.');
                 return;
             }
 
+            let finalProveedorId = null;
+            let finalProveedorNombre = '';
+
+            // --- LÓGICA CRÍTICA: GESTIÓN DEL PROVEEDOR ---
+            if (isNewProvMode) {
+                // A) MODO NUEVO: Primero creamos el proveedor en la BD
+                if (!inputProvNombre.value) {
+                    alert('Escribe el nombre del nuevo proveedor.');
+                    return;
+                }
+
+                if(!confirm(`Se va a registrar primero al proveedor "${inputProvNombre.value}". ¿Continuar?`)) return;
+
+                const nuevoProv = {
+                    nombre: inputProvNombre.value,
+                    email: inputProvEmail.value,
+                    telefono: inputProvTel.value,
+                    direccion: inputProvDir.value
+                };
+
+                // Guardamos en BD y esperamos respuesta
+                const provGuardado = await dataService.createProveedor(nuevoProv);
+                
+                if (provGuardado) {
+                    finalProveedorId = provGuardado.id; // ¡Tenemos ID nuevo!
+                    finalProveedorNombre = provGuardado.nombre;
+                    
+                    // IMPORTANTE: Refrescar el select y volver al modo lista
+                    await cargarProveedoresEnSelect();
+                    selectProveedor.value = finalProveedorId; // Seleccionamos el nuevo
+                    btnToggleProv.click(); // Volver visualmente a modo lista
+                } else {
+                    alert('Error al crear el proveedor.');
+                    return;
+                }
+
+            } else {
+                // B) MODO EXISTENTE: Usamos el ID del select
+                if (!selectProveedor.value) {
+                    alert('Selecciona un proveedor de la lista.');
+                    return;
+                }
+                finalProveedorId = parseInt(selectProveedor.value);
+                finalProveedorNombre = selectProveedor.options[selectProveedor.selectedIndex].text;
+            }
+
+            // --- CREAR OBJETO PRODUCTO TEMPORAL ---
             const prodTemp = {
-                idTemp: Date.now(), // ID temporal único
+                idTemp: Date.now(),
                 nombre: inputNombre.value,
                 precio: parseFloat(inputPrecio.value),
-                stock: 0, // Inicial por defecto
-                categoriaId: selectCategoria ? parseInt(selectCategoria.value) : 1, // Por defecto 1 si no hay select
-                proveedorId: selectProveedor ? parseInt(selectProveedor.value) : 1,
-                // Datos visuales para la tabla temporal
-                provNombre: selectProveedor ? selectProveedor.options[selectProveedor.selectedIndex].text : 'General'
+                stock: 0,
+                categoriaId: selectCategoria ? parseInt(selectCategoria.value) : 1,
+                proveedorId: finalProveedorId, // ID REAL (existente o recién creado)
+                displayProveedor: finalProveedorNombre // Solo para mostrar en tabla
             };
 
             listaTemporal.push(prodTemp);
-            renderTablaTemporal();
+            renderTabla();
             
-            // Limpiar inputs clave
+            // Limpiar inputs de producto
             inputNombre.value = '';
             inputPrecio.value = '';
             inputNombre.focus();
         });
     }
 
-    // 2. Renderizar tabla temporal
-    const renderTablaTemporal = () => {
+    // --- 4. RENDERIZAR TABLA TEMPORAL ---
+    const renderTabla = () => {
         tablaTemp.innerHTML = '';
         listaTemporal.forEach(p => {
-            const row = `
+            tablaTemp.innerHTML += `
                 <tr>
                     <td>${p.idTemp}</td>
                     <td>${p.nombre}</td>
                     <td>${p.precio} €</td>
-                    <td>${p.provNombre}</td>
+                    <td>${p.displayProveedor}</td>
                     <td>Hoy</td>
-                    <td><button class="btn-danger" onclick="eliminarTemp(${p.idTemp})">🗑️</button></td>
+                    <td><button onclick="window.borrarTemp(${p.idTemp})">🗑️</button></td>
                 </tr>
             `;
-            tablaTemp.innerHTML += row;
         });
-        
-        // Actualizar contador y botón guardar
-        contador.innerText = listaTemporal.length;
-        btnRegistrarDB.disabled = listaTemporal.length === 0;
+        if(contador) contador.innerText = listaTemporal.length;
+        if(btnRegistrarDB) btnRegistrarDB.disabled = listaTemporal.length === 0;
     };
 
-    // Hacer la función eliminar accesible globalmente para el onclick del string HTML
-    window.eliminarTemp = (id) => {
-        listaTemporal = listaTemporal.filter(p => p.idTemp !== id);
-        renderTablaTemporal();
+    window.borrarTemp = (id) => {
+        listaTemporal = listaTemporal.filter(x => x.idTemp !== id);
+        renderTabla();
     };
 
-    // 3. Botón "Registrar TODOS en DB"
+    // --- 5. GUARDAR PRODUCTOS EN BD ---
     if (btnRegistrarDB) {
         btnRegistrarDB.addEventListener('click', async () => {
-            if(!confirm('¿Seguro que quieres guardar estos productos en la base de datos?')) return;
-
-            let guardados = 0;
-            
-            // Recorremos la lista y enviamos uno por uno
-            for (const prod of listaTemporal) {
-                // Quitamos propiedades temporales antes de enviar
-                const { idTemp, provNombre, ...productoParaDB } = prod;
-                
-                const resultado = await dataService.createProducto(productoParaDB);
-                if (resultado) guardados++;
+            let count = 0;
+            // Guardamos producto a producto
+            for(let item of listaTemporal) {
+                const { idTemp, displayProveedor, ...cleanItem } = item;
+                const res = await dataService.createProducto(cleanItem);
+                if(res) count++;
             }
-
-            if (guardados === listaTemporal.length) {
-                alert('¡Todos los productos se han guardado correctamente!');
-                listaTemporal = []; // Vaciar lista
-                renderTablaTemporal();
-                window.location.hash = '#almacen'; // Ir al almacén para verlos
-            } else {
-                alert(`Se guardaron ${guardados} de ${listaTemporal.length}. Hubo errores.`);
-            }
+            alert(`¡Éxito! Se han registrado ${count} productos.`);
+            listaTemporal = [];
+            renderTabla();
+            window.location.hash = '#almacen';
         });
+    }
+
+    // --- AUXILIAR: CARGAR SELECT ---
+    async function cargarProveedoresEnSelect() {
+        if(selectProveedor) {
+            const provs = await dataService.getProveedores();
+            selectProveedor.innerHTML = '<option value="">-- Selecciona --</option>' + 
+                provs.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+        }
     }
 };

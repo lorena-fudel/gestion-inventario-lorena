@@ -17,11 +17,10 @@ export const authController = () => {
             if (user) {
                 // Login exitoso
                 localStorage.setItem('user', JSON.stringify(user));
-                window.location.hash = '#almacen'; // Redirigir al inventario
+                window.location.hash = '#inicio'; // Redirigir al inventario
             } else {
                 // Mostrar error
                 if(errorMsg) errorMsg.style.display = 'block';
-                alert('Credenciales incorrectas (Prueba: lala / lala)');
             }
         });
     }

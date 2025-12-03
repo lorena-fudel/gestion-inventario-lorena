@@ -10,6 +10,7 @@ import { albaranesController } from '../controllers/albaranesController.js';
 const routes = {
     '': { view: 'landing', controller: null },
     '#login': { view: 'login', controller: authController },
+    '#inicio': { view: 'inicio', controller: null },
     '#almacen': { view: 'almacen', controller: inventarioController },
     '#productoNuevo': { view: 'productoNuevo', controller: productoNuevoController },
     '#pedidos': { view: 'pedidos', controller: pedidosController },
@@ -99,3 +100,15 @@ export const bindLandingEvents = () => {
         });
     }
 };
+
+// ==========================================
+// 🚀 INICIALIZACIÓN DE LA APP (Código movido de app.js)
+// ==========================================
+
+// Escuchar la carga inicial
+window.addEventListener('load', () => {
+    router();
+});
+
+// Escuchar cambios en la URL (#)
+window.addEventListener('hashchange', router);

@@ -23,7 +23,7 @@
   ],
   "recetas": [
     {
-      "id": 1,
+      "id": "1",
       "nombre": "Sopa de Pescado",
       "costoTotal": 6.5,
       "ingredientes": [
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "nombre": "Ensalada César",
       "costoTotal": 3.2,
       "ingredientes": [
@@ -121,6 +121,13 @@
       "telefono": "+34 98 890 12 34",
       "email": "comercial@vinospeninsulares.es",
       "direccion": "Bodegas Rioja, 56, Logroño"
+    },
+    {
+      "id": "10c7",
+      "nombre": "zulay",
+      "email": "zulay@zulay.com",
+      "telefono": "111 111 111",
+      "direccion": "la laguna 31"
     }
   ],
   "categorias": [
@@ -1534,6 +1541,22 @@
         "id": 3,
         "nombre": "Carnicerías Selectas del Norte"
       }
+    },
+    {
+      "id": "4596",
+      "nombre": "pan",
+      "precio": 5,
+      "stock": 0,
+      "categoriaId": 10,
+      "proveedorId": 10
+    },
+    {
+      "id": "60ef",
+      "nombre": "croissant",
+      "precio": 1.5,
+      "stock": 0,
+      "categoriaId": 10,
+      "proveedorId": 10
     }
   ]
 }

@@ -42,32 +42,54 @@
                     <label for="new-producto-fecha">Fecha de Creación</label>
                     <input type="date" id="new-producto-fecha" required>
                 </div>
+                
             </div>
 
-            <!-- Columna 2: Datos del Proveedor (simplificados para el registro) -->
-            <div class="form-column">
-                <div class="form-group">
-                    <label for="new-producto-proveedor-nombre">Nombre del Proveedor</label>
-                    <input type="text" id="new-producto-proveedor-nombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="new-producto-proveedor-email">Email del Proveedor</label>
-                    <input type="email" id="new-producto-proveedor-email">
-                </div>
-                <div class="form-group">
-                    <label for="new-producto-proveedor-telefono">Teléfono del Proveedor</label>
-                    <input type="tel" id="new-producto-proveedor-telefono">
-                </div>
-                <div class="form-group">
-                    <label for="new-producto-proveedor-direccion">Dirección del Proveedor</label>
-                    <input type="text" id="new-producto-proveedor-direccion">
-                </div>
+    <!-- Columna 2: Datos del Proveedor (simplificados para el registro) -->
+    <div class="form-column">
+        
+        <div class="form-group" style="display: flex; gap: 10px; align-items: flex-end;">
+            <div style="flex-grow: 1;">
+                <label>NUEVO Proveedor:</label>
+                <!-- <select id="select-proveedor" name="proveedorId">
+                    <option value="">-- Selecciona un Proveedor --</option>
+                </select> -->
+                <input type="text" id="new-prov-nombre" placeholder="Nombre Nuevo Proveedor" style="display: none;">
             </div>
             
-            <div class="form-actions full-width">
-                <button type="button" id="btn-anadir-a-tabla" class="btn-primary">➕ Añadir a la Lista Temporal</button>
+            <button type="button" id="btn-toggle-new-prov" class="btn-secondary" style="margin-bottom: 2px;">
+                ➕ Nuevo
+            </button>
+              <!-- boton añadir productos a la lista temporal -->
+            <div class="form-actions full-width" style="grid-column: 1 / -1; margin-top: 20px; text-align: right;">
+                <button type="button" id="btn-anadir-a-tabla" class="btn-primary">
+                    ➕ Añadir a la Lista Temporal
+                </button>
             </div>
-        </form>
+            
+        </div>
+
+        <div id="extra-prov-fields" style="display: none;">
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="new-prov-email">
+            </div>
+            <div class="form-group">
+                <label>Teléfono:</label>
+                <input type="tel" id="new-prov-telefono">
+            </div>
+            <div class="form-group">
+                <label>Dirección:</label>
+                <input type="text" id="new-prov-direccion">
+            </div>
+            <div class="form-actions full-width" style="grid-column: 1 / -1; margin-top: 20px; text-align: right;">
+                <button type="button" id="btn-anadir-a-tabla" class="btn-primary">
+                    ➕ Añadir a la Lista Temporal
+                </button>
+            </div>
+          
+        </div>
+
     </div>
 
     <!-- TABLA TEMPORAL DE PRODUCTOS A REGISTRAR -->

@@ -49,8 +49,25 @@ export const dataService = {
         return await response.json();
     },
 
+
+    // --- PROVEEDORES ---
     getProveedores: async () => {
         const response = await fetch(`${API_URL}/proveedores`);
         return await response.json();
+    },
+
+    //Función para crear un proveedor
+    createProveedor: async (proveedor) => {
+        try {
+            const response = await fetch(`${API_URL}/proveedores`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(proveedor)
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Error creando proveedor:', error);
+            return null;
+        }
     }
 };
