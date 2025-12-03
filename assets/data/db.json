@@ -199,56 +199,30 @@
   ],
   "productos": [
     {
-      "id": "1",
       "nombre": "Tomate Raf",
-      "precio": 4.2,
-      "precioUnitario": "kg",
+      "codigoBarras": "1234567891123",
       "stock": 85,
       "stockMinimo": 30,
+      "precio": 4,
+      "unidadMedida": "kg",
+      "descripcion": "Tomate Raf de la Vega de Almería esto si se cambia",
       "categoriaId": 1,
       "proveedorId": 2,
-      "unidadMedida": "kg",
-      "marca": "Huerta Natural",
-      "codigoBarras": "8410001000015",
-      "fechaCaducidad": "2024-03-20",
-      "alergenos": [],
-      "descripcion": "Tomate Raf de la Vega de Almería",
-      "imagen": "tomate-raf.jpg",
       "activo": true,
-      "categoria": {
-        "id": 1,
-        "nombre": "Frutas Frescas"
-      },
-      "proveedor": {
-        "id": 2,
-        "nombre": "Frutas y Verduras Frescas SL"
-      }
+      "id": "1"
     },
     {
-      "id": "2",
       "nombre": "Lechuga Iceberg",
-      "precio": 1.15,
-      "precioUnitario": "unidad",
+      "codigoBarras": "8410001000022",
       "stock": 120,
       "stockMinimo": 40,
-      "categoriaId": 2,
-      "proveedorId": 2,
+      "precio": 1.15,
       "unidadMedida": "unidad",
-      "marca": "Verde Fresco",
-      "codigoBarras": "8410001000022",
-      "fechaCaducidad": "2024-03-15",
-      "alergenos": [],
       "descripcion": "Lechuga iceberg extra fresca",
-      "imagen": "lechuga-iceberg.jpg",
+      "categoriaId": "9",
+      "proveedorId": "1",
       "activo": true,
-      "categoria": {
-        "id": 2,
-        "nombre": "Verduras y Hortalizas"
-      },
-      "proveedor": {
-        "id": 2,
-        "nombre": "Frutas y Verduras Frescas SL"
-      }
+      "id": "2"
     },
     {
       "id": "3",
@@ -257,8 +231,8 @@
       "precioUnitario": "kg",
       "stock": 35,
       "stockMinimo": 12,
-      "categoriaId": 3,
-      "proveedorId": 3,
+      "categoriaId": 1,
+      "proveedorId": 8,
       "unidadMedida": "kg",
       "marca": "Carnes Premium",
       "codigoBarras": "8410001000039",
@@ -1547,8 +1521,12 @@
       "nombre": "pan",
       "precio": 5,
       "stock": 0,
-      "categoriaId": 10,
-      "proveedorId": 10
+      "categoriaId": "3",
+      "proveedorId": "4",
+      "codigoBarras": "1234567891234",
+      "stockMinimo": 2,
+      "unidadMedida": "unidad",
+      "descripcion": ""
     },
     {
       "id": "60ef",
