@@ -4,8 +4,8 @@ import { loadView } from '../views/viewLoader.js';
 import { authController } from '../controllers/authController.js';
 import { inventarioController } from '../controllers/inventarioController.js';
 import { productoNuevoController } from '../controllers/productoNuevoController.js';
-import { pedidosController } from '../controllers/pedidosController.js';
-import { albaranesController } from '../controllers/albaranesController.js';
+import { pedidosController } from '../controllers/pedidosController.js'; // Solo una vez
+import { albaranesController } from '../controllers/albaranesController.js';    
 
 const routes = {
     '': { view: 'landing', controller: null },
@@ -13,9 +13,9 @@ const routes = {
     '#inicio': { view: 'inicio', controller: null },
     '#almacen': { view: 'almacen', controller: inventarioController },
     '#productoNuevo': { view: 'productoNuevo', controller: productoNuevoController },
-    '#pedidos': { view: 'pedidos', controller: pedidosController },
+    '#pedidos': { view: 'pedidos', controller: pedidosController }, // Ahora cargará el controlador
     '#albaranes': { view: 'albaranes', controller: albaranesController },
-    '#recepcion': { view: 'recepcionPedidos', controller: null }
+    '#recepcion': { view: 'recepcionPedidos', controller: null },
 };
 
 export const router = async () => {
@@ -25,7 +25,8 @@ export const router = async () => {
     // 1. Manejo del Landing
     if (path === '') {
         await loadView('landing');
-        document.getElementById('main-nav').style.display = 'none'; // Ocultar nav en landing
+        const nav = document.getElementById('main-nav');
+        if (nav) nav.style.display = 'none'; // Ocultar nav en landing
         bindLandingEvents();
         return;
     }
@@ -40,12 +41,19 @@ export const router = async () => {
     // 3. Cargar Vista
     await loadView(routeInfo.view);
 
-    // 4. ACTUALIZAR BARRA DE NAVEGACIÓN (Nueva función)
+    // 4. ACTUALIZAR BARRA DE NAVEGACIÓN
     updateNav(path);
 
-    // 5. Ejecutar Controlador
+    // 5. EJECUTAR CONTROLADOR (Lógica Mejorada)
     if (routeInfo.controller) {
-        routeInfo.controller();
+        // Opción A: El controlador es un objeto con método init (Nuevo estándar MVC)
+        if (typeof routeInfo.controller.init === 'function') {
+            await routeInfo.controller.init();
+        } 
+        // Opción B: El controlador es una función directa (Código antiguo)
+        else if (typeof routeInfo.controller === 'function') {
+            routeInfo.controller();
+        }
     }
 };
 
@@ -55,27 +63,27 @@ function updateNav(currentPath) {
     const nav = document.getElementById('main-nav');
     const user = localStorage.getItem('user');
 
-    // Lógica de visibilidad: Solo mostrar si hay usuario Y no estamos en login
-    if (user && currentPath !== '#login') {
-        nav.style.display = 'block';
-    } else {
-        nav.style.display = 'none';
+    // Lógica de visibilidad
+    if (nav) {
+        if (user && currentPath !== '#login') {
+            nav.style.display = 'block';
+        } else {
+            nav.style.display = 'none';
+        }
+
+        // Lógica de clase "Active"
+        const links = nav.querySelectorAll('a');
+        links.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
     }
 
-    // Lógica de clase "Active" (Para resaltar donde estamos)
-    const links = nav.querySelectorAll('a');
-    links.forEach(link => {
-        // Compara el href del link con el hash actual
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-
-    // Lógica de Cerrar Sesión (Se asigna el evento una sola vez)
+    // Lógica de Cerrar Sesión
     const btnLogout = document.getElementById('btn-logout');
-    // Usamos onclick directo para no acumular event listeners
     if (btnLogout) {
         btnLogout.onclick = (e) => {
             e.preventDefault();
@@ -86,9 +94,8 @@ function updateNav(currentPath) {
 
 function logout() {
     if(confirm('¿Seguro que quieres cerrar sesión?')) {
-        localStorage.removeItem('user'); // Borrar credenciales
-        window.location.hash = ''; // Ir al inicio
-        // El router detectará el cambio y ocultará el menú automáticamente
+        localStorage.removeItem('user');
+        window.location.hash = '';
     }
 }
 
@@ -102,13 +109,11 @@ export const bindLandingEvents = () => {
 };
 
 // ==========================================
-// 🚀 INICIALIZACIÓN DE LA APP (Código movido de app.js)
+// 🚀 INICIALIZACIÓN DE LA APP
 // ==========================================
 
-// Escuchar la carga inicial
 window.addEventListener('load', () => {
     router();
 });
 
-// Escuchar cambios en la URL (#)
 window.addEventListener('hashchange', router);

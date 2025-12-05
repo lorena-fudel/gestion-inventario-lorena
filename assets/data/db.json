@@ -1536,5 +1536,616 @@
       "categoriaId": 10,
       "proveedorId": 10
     }
+  ],
+  "pedidos": [
+    {
+      "id": "2001",
+      "fecha": "2024-03-20T09:00:00",
+      "proveedorId": "2",
+      "usuarioId": "1",
+      "estado": "recibido",
+      "total": 925.5,
+      "items": [
+        { "productoId": "17", "nombre": "Plátanos de Canarias", "cantidad": 150, "precioUnitario": 1.95, "subtotal": 292.5 },
+        { "productoId": "18", "nombre": "Naranjas Valencia", "cantidad": 200, "precioUnitario": 1.45, "subtotal": 290 },
+        { "productoId": "43", "nombre": "Manzanas Golden", "cantidad": 100, "precioUnitario": 1.75, "subtotal": 175 },
+        { "productoId": "44", "nombre": "Peras Conferencia", "cantidad": 80, "precioUnitario": 2.10, "subtotal": 168 }
+      ]
+    },
+    {
+      "id": "2002",
+      "fecha": "2024-03-25T10:00:00",
+      "proveedorId": "8",
+      "usuarioId": "1",
+      "estado": "recibido",
+      "total": 546.6,
+      "items": [
+        { "productoId": "16", "nombre": "Agua Mineral", "cantidad": 100, "precioUnitario": 0.65, "subtotal": 65 },
+        { "productoId": "42", "nombre": "Refresco de Cola", "cantidad": 100, "precioUnitario": 0.85, "subtotal": 85 },
+        { "productoId": "41", "nombre": "Cerveza Rubia", "cantidad": 120, "precioUnitario": 1.20, "subtotal": 144 },
+        { "productoId": "15", "nombre": "Vino Tinto Reserva", "cantidad": 12, "precioUnitario": 14.80, "subtotal": 177.6 },
+        { "productoId": "40", "nombre": "Vino Blanco", "cantidad": 10, "precioUnitario": 7.50, "subtotal": 75 }
+      ]
+    },
+    {
+      "id": "1001",
+      "fecha": "2024-02-28T10:00:00",
+      "proveedorId": "2",
+      "usuarioId": "1",
+      "estado": "recibido",
+      "total": 122.5,
+      "items": [
+        {
+          "productoId": "1",
+          "nombre": "Tomate Raf",
+          "cantidad": 20,
+          "precioUnitario": 4,
+          "subtotal": 80
+        },
+        {
+          "productoId": "19",
+          "nombre": "Zanahorias",
+          "cantidad": 50,
+          "precioUnitario": 0.85,
+          "subtotal": 42.5
+        }
+      ]
+    },
+    {
+      "id": "1002",
+      "fecha": "2024-03-01T09:30:00",
+      "proveedorId": "3",
+      "usuarioId": "1",
+      "estado": "pendiente",
+      "total": 732.5,
+      "items": [
+        {
+          "productoId": "3",
+          "nombre": "Solomillo de Ternera",
+          "cantidad": 10,
+          "precioUnitario": 24.9,
+          "subtotal": 249
+        },
+        {
+          "productoId": "4",
+          "nombre": "Pechuga de Pollo",
+          "cantidad": 30,
+          "precioUnitario": 7.85,
+          "subtotal": 235.5
+        },
+        {
+          "productoId": "21",
+          "nombre": "Lomo de Cerdo",
+          "cantidad": 10,
+          "precioUnitario": 11.9,
+          "subtotal": 119
+        },
+        {
+          "productoId": "22",
+          "nombre": "Chuletas de Cordero",
+          "cantidad": 10,
+          "precioUnitario": 12.9,
+          "subtotal": 129
+        }
+      ]
+    },
+    {
+      "id": "1003",
+      "fecha": "2024-03-02T11:15:00",
+      "proveedorId": "4",
+      "usuarioId": "2",
+      "estado": "recibido",
+      "total": 523.5,
+      "items": [
+        {
+          "productoId": "5",
+          "nombre": "Salmón Fresco",
+          "cantidad": 15,
+          "precioUnitario": 18.5,
+          "subtotal": 277.5
+        },
+        {
+          "productoId": "6",
+          "nombre": "Gambas Blancas",
+          "cantidad": 5,
+          "precioUnitario": 26.4,
+          "subtotal": 132
+        },
+         {
+          "productoId": "25",
+          "nombre": "Merluza Fresca",
+          "cantidad": 10,
+          "precioUnitario": 11.4,
+          "subtotal": 114
+        }
+      ]
+    },
+    {
+      "id": "1004",
+      "fecha": "2024-03-03T08:45:00",
+      "proveedorId": "5",
+      "usuarioId": "1",
+      "estado": "recibido",
+      "total": 126.9,
+      "items": [
+        {
+          "productoId": "7",
+          "nombre": "Leche Entera",
+          "cantidad": 60,
+          "precioUnitario": 0.95,
+          "subtotal": 57
+        },
+        {
+          "productoId": "9",
+          "nombre": "Huevos Camperos",
+          "cantidad": 20,
+          "precioUnitario": 2.95,
+          "subtotal": 59
+        },
+        {
+          "productoId": "29",
+          "nombre": "Yogur Natural",
+          "cantidad": 24,
+          "precioUnitario": 0.454,
+          "subtotal": 10.9
+        }
+      ]
+    },
+    {
+      "id": "1005",
+      "fecha": "2024-03-04T16:20:00",
+      "proveedorId": "1",
+      "usuarioId": "2",
+      "estado": "cancelado",
+      "total": 45.5,
+      "items": [
+        {
+          "productoId": "10",
+          "nombre": "Pan de Barra",
+          "cantidad": 30,
+          "precioUnitario": 1.1,
+          "subtotal": 33
+        },
+        {
+          "productoId": "35",
+          "nombre": "Baguette",
+          "cantidad": 10,
+          "precioUnitario": 1.25,
+          "subtotal": 12.5
+        }
+      ]
+    },
+    {
+      "id": "1006",
+      "fecha": "2024-03-05T10:00:00",
+      "proveedorId": "6",
+      "usuarioId": "1",
+      "estado": "recibido",
+      "total": 230.5,
+      "items": [
+        {
+          "productoId": "11",
+          "nombre": "Aceite de Oliva Virgen Extra",
+          "cantidad": 20,
+          "precioUnitario": 8.9,
+          "subtotal": 178
+        },
+        {
+          "productoId": "37",
+          "nombre": "Vinagre de Módena",
+          "cantidad": 10,
+          "precioUnitario": 5.25,
+          "subtotal": 52.5
+        }
+      ]
+    },
+    {
+      "id": "1007",
+      "fecha": "2024-03-06T12:30:00",
+      "proveedorId": "8",
+      "usuarioId": "1",
+      "estado": "pendiente",
+      "total": 361.0,
+      "items": [
+        {
+          "productoId": "15",
+          "nombre": "Vino Tinto Reserva",
+          "cantidad": 12,
+          "precioUnitario": 14.8,
+          "subtotal": 177.6
+        },
+        {
+          "productoId": "40",
+          "nombre": "Vino Blanco",
+          "cantidad": 12,
+          "precioUnitario": 8.9,
+          "subtotal": 106.8
+        },
+        {
+          "productoId": "41",
+          "nombre": "Cerveza Rubia",
+          "cantidad": 48,
+          "precioUnitario": 1.2,
+          "subtotal": 57.6
+        },
+        {
+          "productoId": "16",
+          "nombre": "Agua Mineral",
+          "cantidad": 20,
+          "precioUnitario": 0.95,
+          "subtotal": 19
+        }
+      ]
+    },
+    {
+      "id": "1008",
+      "fecha": "2024-03-07T09:00:00",
+      "proveedorId": "7",
+      "usuarioId": "2",
+      "estado": "recibido",
+      "total": 93.9,
+      "items": [
+        {
+          "productoId": "13",
+          "nombre": "Pimentón de la Vera",
+          "cantidad": 10,
+          "precioUnitario": 4.95,
+          "subtotal": 49.5
+        },
+        {
+          "productoId": "14",
+          "nombre": "Azafrán en hebras",
+          "cantidad": 2,
+          "precioUnitario": 13.2,
+          "subtotal": 26.4
+        },
+        {
+          "productoId": "38",
+          "nombre": "Orégano",
+          "cantidad": 5,
+          "precioUnitario": 3.6,
+          "subtotal": 18
+        }
+      ]
+    },
+    {
+      "id": "1009",
+      "fecha": "2024-03-08T14:10:00",
+      "proveedorId": "2",
+      "usuarioId": "1",
+      "estado": "pendiente",
+      "total": 138.25,
+      "items": [
+        {
+          "productoId": "43",
+          "nombre": "Manzanas Golden",
+          "cantidad": 25,
+          "precioUnitario": 1.75,
+          "subtotal": 43.75
+        },
+        {
+          "productoId": "44",
+          "nombre": "Peras Conferencia",
+          "cantidad": 20,
+          "precioUnitario": 2.1,
+          "subtotal": 42
+        },
+        {
+          "productoId": "46",
+          "nombre": "Patatas",
+          "cantidad": 50,
+          "precioUnitario": 0.65,
+          "subtotal": 32.5
+        },
+        {
+          "productoId": "20",
+          "nombre": "Cebollas",
+          "cantidad": 20,
+          "precioUnitario": 1.0,
+          "subtotal": 20
+        }
+      ]
+    },
+    {
+      "id": "1010",
+      "fecha": "2024-03-09T08:00:00",
+      "proveedorId": "10c7",
+      "usuarioId": "1",
+      "estado": "recibido",
+      "total": 30.0,
+      "items": [
+        {
+          "productoId": "60ef",
+          "nombre": "croissant",
+          "cantidad": 20,
+          "precioUnitario": 1.5,
+          "subtotal": 30
+        }
+      ]
+    }
+  ],
+  "albaranes": [
+    {
+      "id": "ALB-24-901",
+      "pedidoId": "2001",
+      "proveedorId": "2",
+      "fecha": "2024-03-21T08:30:00",
+      "nota": "Entrega 1/3: Producto nacional urgente",
+      "items": [
+        { "productoId": "17", "nombre": "Plátanos de Canarias", "cantidad": 150 },
+        { "productoId": "18", "nombre": "Naranjas Valencia", "cantidad": 100 }
+      ]
+    },
+    {
+      "id": "ALB-24-902",
+      "pedidoId": "2001",
+      "proveedorId": "2",
+      "fecha": "2024-03-22T09:00:00",
+      "nota": "Entrega 2/3: Resto de cítricos y manzanas",
+      "items": [
+        { "productoId": "18", "nombre": "Naranjas Valencia", "cantidad": 100 },
+        { "productoId": "43", "nombre": "Manzanas Golden", "cantidad": 100 }
+      ]
+    },
+    {
+      "id": "ALB-24-903",
+      "pedidoId": "2001",
+      "proveedorId": "2",
+      "fecha": "2024-03-24T10:15:00",
+      "nota": "Entrega 3/3: Las peras venían con retraso de almacén",
+      "items": [
+        { "productoId": "44", "nombre": "Peras Conferencia", "cantidad": 80 }
+      ]
+    },
+
+
+    {
+      "id": "ALB-24-904",
+      "pedidoId": "2002",
+      "proveedorId": "8",
+      "fecha": "2024-03-26T11:00:00",
+      "nota": "Lote A: Refrescos y Aguas (Palet pesado)",
+      "items": [
+        { "productoId": "16", "nombre": "Agua Mineral", "cantidad": 100 },
+        { "productoId": "42", "nombre": "Refresco de Cola", "cantidad": 100 }
+      ]
+    },
+    {
+      "id": "ALB-24-905",
+      "pedidoId": "2002",
+      "proveedorId": "8",
+      "fecha": "2024-03-26T11:30:00",
+      "nota": "Lote B: Cervezas (Camión refrigerado)",
+      "items": [
+        { "productoId": "41", "nombre": "Cerveza Rubia", "cantidad": 120 }
+      ]
+    },
+    {
+      "id": "ALB-24-906",
+      "pedidoId": "2002",
+      "proveedorId": "8",
+      "fecha": "2024-03-27T09:45:00",
+      "nota": "Lote C: Vinos (Transporte especial frágil)",
+      "items": [
+        { "productoId": "15", "nombre": "Vino Tinto Reserva", "cantidad": 12 },
+        { "productoId": "40", "nombre": "Vino Blanco", "cantidad": 10 }
+      ]
+    },
+    {
+      "id": "ALB-24-001",
+      "pedidoId": "1001",
+      "proveedorId": "2",
+      "fecha": "2024-02-28T14:00:00",
+      "nota": "Entrega completa",
+      "items": [
+        { "productoId": "1", "nombre": "Tomate Raf", "cantidad": 20 },
+        { "productoId": "19", "nombre": "Zanahorias", "cantidad": 50 }
+      ]
+    },
+    {
+      "id": "ALB-24-002",
+      "pedidoId": "1002",
+      "proveedorId": "3",
+      "fecha": "2024-03-02T09:00:00",
+      "nota": "Primera entrega parcial (Carnes)",
+      "items": [
+        { "productoId": "3", "nombre": "Solomillo de Ternera", "cantidad": 5 },
+        { "productoId": "21", "nombre": "Lomo de Cerdo", "cantidad": 10 }
+      ]
+    },
+    {
+      "id": "ALB-24-003",
+      "pedidoId": "1002",
+      "proveedorId": "3",
+      "fecha": "2024-03-03T10:30:00",
+      "nota": "Segunda entrega parcial (Aves)",
+      "items": [
+        { "productoId": "4", "nombre": "Pechuga de Pollo", "cantidad": 15 },
+        { "productoId": "22", "nombre": "Chuletas de Cordero", "cantidad": 5 }
+      ]
+    },
+    {
+      "id": "ALB-24-004",
+      "pedidoId": "1002",
+      "proveedorId": "3",
+      "fecha": "2024-03-05T09:15:00",
+      "nota": "Entrega final del pedido 1002",
+      "items": [
+        { "productoId": "3", "nombre": "Solomillo de Ternera", "cantidad": 5 },
+        { "productoId": "4", "nombre": "Pechuga de Pollo", "cantidad": 15 },
+        { "productoId": "22", "nombre": "Chuletas de Cordero", "cantidad": 5 }
+      ]
+    },
+    {
+      "id": "ALB-24-005",
+      "pedidoId": "1003",
+      "proveedorId": "4",
+      "fecha": "2024-03-02T12:00:00",
+      "nota": "Pescado fresco urgente",
+      "items": [
+        { "productoId": "5", "nombre": "Salmón Fresco", "cantidad": 15 },
+        { "productoId": "25", "nombre": "Merluza Fresca", "cantidad": 5 }
+      ]
+    },
+    {
+      "id": "ALB-24-006",
+      "pedidoId": "1003",
+      "proveedorId": "4",
+      "fecha": "2024-03-03T08:00:00",
+      "nota": "Mariscos y resto de pescado",
+      "items": [
+        { "productoId": "6", "nombre": "Gambas Blancas", "cantidad": 5 },
+        { "productoId": "25", "nombre": "Merluza Fresca", "cantidad": 5 }
+      ]
+    },
+    {
+      "id": "ALB-24-007",
+      "pedidoId": "1004",
+      "proveedorId": "5",
+      "fecha": "2024-03-03T09:00:00",
+      "nota": "Lácteos lote 1",
+      "items": [
+        { "productoId": "7", "nombre": "Leche Entera", "cantidad": 30 },
+        { "productoId": "29", "nombre": "Yogur Natural", "cantidad": 12 }
+      ]
+    },
+    {
+      "id": "ALB-24-008",
+      "pedidoId": "1004",
+      "proveedorId": "5",
+      "fecha": "2024-03-03T16:00:00",
+      "nota": "Lácteos lote 2 y Huevos",
+      "items": [
+        { "productoId": "7", "nombre": "Leche Entera", "cantidad": 30 },
+        { "productoId": "29", "nombre": "Yogur Natural", "cantidad": 12 },
+        { "productoId": "9", "nombre": "Huevos Camperos", "cantidad": 20 }
+      ]
+    },
+    {
+      "id": "ALB-24-009",
+      "pedidoId": "1006",
+      "proveedorId": "6",
+      "fecha": "2024-03-05T11:00:00",
+      "nota": "Aceites",
+      "items": [
+        { "productoId": "11", "nombre": "Aceite de Oliva Virgen Extra", "cantidad": 10 }
+      ]
+    },
+    {
+      "id": "ALB-24-010",
+      "pedidoId": "1006",
+      "proveedorId": "6",
+      "fecha": "2024-03-06T10:00:00",
+      "nota": "Resto de aceites y vinagres",
+      "items": [
+        { "productoId": "11", "nombre": "Aceite de Oliva Virgen Extra", "cantidad": 10 },
+        { "productoId": "37", "nombre": "Vinagre de Módena", "cantidad": 10 }
+      ]
+    },
+    {
+      "id": "ALB-24-011",
+      "pedidoId": "1007",
+      "proveedorId": "8",
+      "fecha": "2024-03-06T14:00:00",
+      "nota": "Entrega bebidas alcohólicas",
+      "items": [
+        { "productoId": "15", "nombre": "Vino Tinto Reserva", "cantidad": 6 },
+        { "productoId": "41", "nombre": "Cerveza Rubia", "cantidad": 24 }
+      ]
+    },
+    {
+      "id": "ALB-24-012",
+      "pedidoId": "1007",
+      "proveedorId": "8",
+      "fecha": "2024-03-07T10:00:00",
+      "nota": "Refuerzo cervezas",
+      "items": [
+        { "productoId": "41", "nombre": "Cerveza Rubia", "cantidad": 24 }
+      ]
+    },
+    {
+      "id": "ALB-24-013",
+      "pedidoId": "1007",
+      "proveedorId": "8",
+      "fecha": "2024-03-08T09:00:00",
+      "nota": "Vinos restantes",
+      "items": [
+        { "productoId": "15", "nombre": "Vino Tinto Reserva", "cantidad": 6 },
+        { "productoId": "40", "nombre": "Vino Blanco", "cantidad": 12 }
+      ]
+    },
+    {
+      "id": "ALB-24-014",
+      "pedidoId": "1007",
+      "proveedorId": "8",
+      "fecha": "2024-03-08T12:00:00",
+      "nota": "Agua mineral (retrasada)",
+      "items": [
+        { "productoId": "16", "nombre": "Agua Mineral", "cantidad": 20 }
+      ]
+    },
+    {
+      "id": "ALB-24-015",
+      "pedidoId": "1008",
+      "proveedorId": "7",
+      "fecha": "2024-03-07T11:00:00",
+      "nota": "Especias lote completo",
+      "items": [
+        { "productoId": "13", "nombre": "Pimentón de la Vera", "cantidad": 10 },
+        { "productoId": "14", "nombre": "Azafrán en hebras", "cantidad": 2 },
+        { "productoId": "38", "nombre": "Orégano", "cantidad": 5 }
+      ]
+    },
+    {
+      "id": "ALB-24-016",
+      "pedidoId": "1009",
+      "proveedorId": "2",
+      "fecha": "2024-03-08T08:30:00",
+      "nota": "Patatas saco grande",
+      "items": [
+        { "productoId": "46", "nombre": "Patatas", "cantidad": 50 }
+      ]
+    },
+    {
+      "id": "ALB-24-017",
+      "pedidoId": "1009",
+      "proveedorId": "2",
+      "fecha": "2024-03-09T08:30:00",
+      "nota": "Fruta fresca",
+      "items": [
+        { "productoId": "43", "nombre": "Manzanas Golden", "cantidad": 25 },
+        { "productoId": "44", "nombre": "Peras Conferencia", "cantidad": 20 }
+      ]
+    },
+    {
+      "id": "ALB-24-018",
+      "pedidoId": "1009",
+      "proveedorId": "2",
+      "fecha": "2024-03-10T09:00:00",
+      "nota": "Cebollas",
+      "items": [
+        { "productoId": "20", "nombre": "Cebollas", "cantidad": 20 }
+      ]
+    },
+    {
+      "id": "ALB-24-019",
+      "pedidoId": "1010",
+      "proveedorId": "10c7",
+      "fecha": "2024-03-09T08:15:00",
+      "nota": "Croissants desayuno Lote A",
+      "items": [
+        { "productoId": "60ef", "nombre": "croissant", "cantidad": 10 }
+      ]
+    },
+    {
+      "id": "ALB-24-020",
+      "pedidoId": "1010",
+      "proveedorId": "10c7",
+      "fecha": "2024-03-09T17:00:00",
+      "nota": "Croissants merienda Lote B",
+      "items": [
+        { "productoId": "60ef", "nombre": "croissant", "cantidad": 10 }
+      ]
+    }
   ]
 }

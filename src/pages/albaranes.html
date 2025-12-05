@@ -1,74 +1,101 @@
-<section id="gestion-albaranes-view" class="main-content-section">
-    <h2>📄 Gestión de Albaranes de Recepción</h2>
-    
-    <div class="list-controls document-controls">
-        <button id="btn-nuevo-albaran" class="btn-primary">➕ Registrar Albarán</button>
-        
-        <div class="search-group">
-            <select id="filtro-albaranes-mes">
-                <option value="">Filtrar por Mes</option>
-                <!-- Opciones de meses se cargarán con JS (Enero, Febrero, etc.) -->
-            </select>
-            <input type="text" id="filtro-albaranes-ref" placeholder="Buscar por Ref. o Pedido Asociado">
-            <button id="btn-aplicar-filtro-albaran" class="btn-secondary">Buscar</button>
-        </div>
+<link rel="stylesheet" href="assets/css/albaranes.css">
+<div class="container-albaranes">
+    <div class="header-section">
+        <h1>🚛 Gestión de Albaranes</h1>
     </div>
-    
-    <!-- Listado principal de Albaranes -->
-    <table id="albaranes-list-table" class="data-table">
-        <thead>
-            <tr>
-                <th>Referencia</th>
-                <th>Fecha Recepción</th>
-                <th>Pedido Asociado</th>
-                <th>Artículos Recibidos</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Los albaranes se cargarán aquí con JS -->
-        </tbody>
-    </table>
-</section>
 
-<!-- MODAL DE DETALLE Y ACCIÓN PARA ALBARANES (Igual formato que Pedidos) -->
-<div id="albaran-detalle-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-content large-modal">
-        <span class="close-button">&times;</span>
-        <h3 id="albaran-modal-title">Detalle del Albarán #<span id="albaran-ref-display-modal">A123</span></h3>
-        
-        <!-- Contenido Fijo / Estático -->
-        <div id="albaran-detalle-estatico">
-            <p><strong>Pedido Asociado:</strong> <span id="albaran-pedido-ref"></span></p>
-            <p><strong>Fecha Recepción:</strong> <span id="albaran-fecha"></span></p>
-            <p><strong>Observaciones:</strong> <span id="albaran-observaciones"></span></p>
-
-            <h4>Artículos Recibidos</h4>
-            <table id="tabla-albaranes" class="modal-data-table">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Cantidad Recibida</th>
-                        <th>Estado de Inspección</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Artículos del albarán se cargan aquí -->
-                </tbody>
-            </table>
+    <div class="filtros-box">
+        <div class="campo-filtro">
+            <label for="filtroId">Nº Albarán:</label>
+            <input type="text" id="filtroId" placeholder="Ej: ALB-24-001">
         </div>
-        
-        <!-- Formulario de Edición (Oculto por defecto, se activa con el botón Modificar) -->
-        <form id="albaran-modificar-form" style="display: none;">
-            <!-- Campos para modificar los detalles del albarán -->
-            <p class="text-xs text-muted">**Aquí se cargarían los campos para modificar las cantidades o el estado de inspección**</p>
-            <button type="submit" class="btn-success">Guardar Modificaciones</button>
-        </form>
 
-        <div class="modal-actions">
-            <button id="btn-modificar-albaran" class="btn-primary">✏️ Modificar</button>
-            <button id="btn-descargar-pdf-albaran" class="btn-secondary">⬇️ Descargar PDF</button>
+        <div class="campo-filtro">
+            <label for="filtroProveedor">Proveedor:</label>
+            <select id="filtroProveedor">
+                <option value="">Cargando...</option>
+            </select>
+        </div>
+
+        <div class="campo-filtro">
+            <label for="filtroFecha">Fecha:</label>
+            <input type="date" id="filtroFecha">
+        </div>
+
+        <button id="btnLimpiar" class="btn-reset">Limpiar Filtros</button>
+    </div>
+
+    <div class="tabla-responsive">
+        <table class="tabla-datos">
+            <thead>
+                <tr>
+                    <th>ID Albarán</th>
+                    <th>Ref. Pedido</th>
+                    <th>Fecha Recepción</th>
+                    <th>Proveedor</th>
+                    <th>Nota</th>
+                    <th style="text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaAlbaranesBody">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="modalOverlayAlb" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Albarán <span id="mId">---</span></h2>
+            <span class="close-btn" id="btnCerrarX">&times;</span>
+        </div>
+
+        <div class="modal-body">
+            <div class="info-grid">
+                <div class="info-group">
+                    <label>Fecha:</label>
+                    <span id="mFecha">--/--/----</span>
+                </div>
+                <div class="info-group">
+                    <label>Proveedor:</label>
+                    <span id="mProveedor" style="font-weight: bold;">---</span>
+                </div>
+                <div class="info-group">
+                    <label>Ref. Pedido:</label>
+                    <span id="mPedidoId" class="badge pendiente">---</span>
+                </div>
+                <div class="info-group">
+                    <label>Valoración Total:</label>
+                    <span id="mTotalValorado" style="font-size: 1.2em; font-weight: bold; color: #28a745;">0.00 €</span>
+                </div>
+            </div>
+
+            <div class="nota-box">
+                <label>Nota de entrega:</label>
+                <p id="mNota">---</p>
+            </div>
+
+            <hr class="divider">
+
+            <h3>Artículos Recibidos</h3>
+            <div class="tabla-scroll-modal">
+                <table class="tabla-items">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th style="text-align: center;">Cant.</th>
+                            <th style="text-align: right;">Precio U.</th>
+                            <th style="text-align: right;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mTablaItemsBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button id="btnCerrarModal" class="btn-secondary">Cerrar</button>
         </div>
     </div>
 </div>
