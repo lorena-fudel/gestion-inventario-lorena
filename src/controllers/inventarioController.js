@@ -42,7 +42,7 @@ export const inventarioController = async () => {
             await cargarFiltrosCabecera();
             // TRUCO: Cargar selects del modal al inicio para asegurar que existen
             await cargarSelectsDelModal(); 
-            todosLosProductos = await dataService.getProductos();
+            todosLosProductos = await dataService.getAllProductos();
             renderizarTabla(todosLosProductos);
         } catch (error) {
             console.error("Error inicial:", error);
@@ -187,15 +187,15 @@ export const inventarioController = async () => {
     // ============================================================
     async function cargarFiltrosCabecera() {
         if(selectCategoriaFiltro) {
-            const cats = await dataService.getCategorias();
+            const cats = await dataService.getAllCategorias();
             selectCategoriaFiltro.innerHTML = '<option value="">Todas las Categorías</option>' + 
                 cats.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
         }
     }
 
     async function cargarSelectsDelModal() {
-        const cats = await dataService.getCategorias();
-        const provs = await dataService.getProveedores();
+        const cats = await dataService.getAllCategorias();
+        const provs = await dataService.getAllProveedores();
 
         if (selCatModal) {
             selCatModal.innerHTML = '<option value="">Selecciona...</option>' + 

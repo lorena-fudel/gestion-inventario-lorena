@@ -1,6 +1,6 @@
 import { dataService } from '../services/dataService.js';
 
-export const authController = () => {
+export const authenticateUser = () => {
     const form = document.getElementById('login-form');
     const errorMsg = document.getElementById('login-error-message');
 
@@ -12,7 +12,7 @@ export const authController = () => {
             const username = document.getElementById('login-usuario').value;
             const password = document.getElementById('login-contrasena').value;
 
-            const user = await dataService.login(username, password);
+            const user = await dataService.authenticateUser(username, password);
 
             if (user) {
                 // Login exitoso

@@ -1,115 +1,127 @@
-const API_URL = 'http://localhost:3000';
+// Ruta al archivo JSON (relativa al index.html)
+const DATA_URL = './assets/data/db.json';
 
 export const dataService = {
-    // --- USUARIOS ---
-    login: async (username, password) => {
+
+    // =================================================
+    // MÉTODO GENÉRICO (Fetch de Lectura)
+    // =================================================
+    _fetchAll: async () => {
         try {
-            const response = await fetch(`${API_URL}/usuarios?username=${username}&password=${password}`);
-            const users = await response.json();
-            return users.length > 0 ? users[0] : null;
+            const response = await fetch(DATA_URL);
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status} al cargar ${DATA_URL}`);
+            }
+            const data = await response.json();
+            return data;
         } catch (error) {
-            console.error('Error login:', error);
+            console.error("Error crítico cargando datos:", error);
             return null;
         }
     },
 
-    // --- PRODUCTOS ---
-    getProductos: async () => {
-        // TRUCO ANTI-CACHÉ: 
-        // Añadimos &t=${Date.now()} para que el navegador NO use datos viejos de la memoria.
-        // _expand trae los objetos completos de categoria y proveedor.
-        const url = `${API_URL}/productos?_expand=categoria&_expand=proveedor&t=${Date.now()}`;
-        const response = await fetch(url);
-        return await response.json();
+    //login
+    authenticateUser: async (username, password) => {
+        const data = await dataService._fetchAll();
+        const user = data.usuarios.find(u => u.username === username && u.password === password);
+        return user || null;
     },
 
-    createProducto: async (producto) => {
-        const response = await fetch(`${API_URL}/productos`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(producto)
-        });
-        return await response.json();
+    // =================================================
+    // MÉTODOS SIMULADOS DE ESCRITURA (CRUD)
+    // NOTA: Estas funciones SIMULAN la llamada a una API real.
+    // =================================================
+    
+    createProveedor: async (nuevoProv) => {
+        console.log("API SIMULADA: Creando Proveedor:", nuevoProv);
+        await new Promise(resolve => setTimeout(resolve, 300)); 
+        return { 
+            ...nuevoProv, 
+            id: Date.now() // ID temporal
+        };
     },
 
-    updateProducto: async (id, datosParciales) => {
-        try {
-            // USAMOS PATCH: Solo modifica los campos que enviamos, respeta el resto.
-            const response = await fetch(`${API_URL}/productos/${id}`, {
-                method: 'PATCH', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datosParciales)
-            });
-            return await response.json();
-        } catch (error) {
-            console.error('Error actualizando:', error);
-            return null;
-        }
+    createProducto: async (nuevoProd) => {
+        console.log("API SIMULADA: Creando Producto:", nuevoProd);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return { 
+            ...nuevoProd, 
+            id: Date.now() 
+        };
     },
 
-    // --- CATEGORÍAS Y PROVEEDORES ---
-    getCategorias: async () => {
-        const response = await fetch(`${API_URL}/categorias`);
-        return await response.json();
+    deleteProducto: async (id) => {
+        console.log(`API SIMULADA: Eliminando Producto ID: ${id}`);
+        await new Promise(resolve => setTimeout(resolve, 200));
+        return { success: true, id: id };
     },
 
-    getProveedores: async () => {
-        const response = await fetch(`${API_URL}/proveedores`);
-        return await response.json();
+    updateProducto: async (prod) => {
+        console.log(`API SIMULADA: Actualizando Producto ID: ${prod.id}`, prod);
+        await new Promise(resolve => setTimeout(resolve, 200));
+        return { success: true, data: prod };
+    },
+    
+    // 🆕 Usado en Recepción
+    createAlbaran: async (nuevoAlbaran) => {
+        console.log("API SIMULADA: Creando Albarán:", nuevoAlbaran);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return { 
+            ...nuevoAlbaran, 
+            id: Date.now() // ID temporal del nuevo albarán
+        };
     },
 
-    createProveedor: async (proveedor) => {
-        const response = await fetch(`${API_URL}/proveedores`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(proveedor)
-        });
-        return await response.json();
+    // 🆕 Usado en Recepción
+    updatePedidoStatus: async (id, newStatus) => {
+        console.log(`API SIMULADA: Actualizando Pedido ID ${id} a estado: ${newStatus}`);
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return { success: true, id: id, status: newStatus };
     },
 
-    // --- PEDIDOS Y ALBARANES ---
-getAllPedidos: async () => {
-    try {
-      const response = await fetch('assets/data/db.json');
-      const data = await response.json();
-      return data.pedidos;
-    } catch (error) {
-      console.error('Error pedidos:', error);
-      return [];
+    // =================================================
+    // MÉTODOS ESPECÍFICOS POR ENTIDAD (Lectura)
+    // =================================================
+
+    // 🆕 Usado en Recepción (Contiene el FIX para el TypeError)
+    getPedidoById: async (id) => {
+        // Usamos dataService. para evitar el error de ámbito (TypeError)
+        const data = await dataService._fetchAll(); 
+        return data && data.pedidos ? data.pedidos.find(p => p.id == id) : null;
+    },
+    
+    getAllProductos: async () => {
+        const data = await dataService._fetchAll();
+        return data && data.productos ? data.productos : [];
+    },
+
+    getAllCategorias: async () => {
+        const data = await dataService._fetchAll();
+        return data && data.categorias ? data.categorias : [];
+    },
+
+    getAllProveedores: async () => {
+        const data = await dataService._fetchAll();
+        return data && data.proveedores ? data.proveedores : [];
+    },
+
+    getAllPedidos: async () => {
+        const data = await dataService._fetchAll();
+        return data && data.pedidos ? data.pedidos : [];
+    },
+
+    getAllAlbaranes: async () => {
+        const data = await dataService._fetchAll();
+        return data && data.albaranes ? data.albaranes : [];
+    },
+
+    getAllUsuarios: async () => {
+        const data = await dataService._fetchAll();
+        return data && data.usuarios ? data.usuarios : [];
+    },
+
+    getAllRecetas: async () => {
+        const data = await dataService._fetchAll();
+        return data && data.recetas ? data.recetas : [];
     }
-  },
-
-  getAllProveedores: async () => {
-    try {
-      const response = await fetch('assets/data/db.json');
-      const data = await response.json();
-      return data.proveedores;
-    } catch (error) {
-      console.error('Error proveedores:', error);
-      return [];
-    }
-  },
-
-  // --- AGREGA ESTO SI NO LO TIENES ---
-  getAllAlbaranes: async () => {
-    try {
-      const response = await fetch('assets/data/db.json');
-      const data = await response.json();
-      return data.albaranes || [];
-    } catch (error) {
-      console.error('Error albaranes:', error);
-      return [];
-    }
-  },
-
-  getAllProductos: async () => {
-    try {
-      const response = await fetch('assets/data/db.json');
-      const data = await response.json();
-      return data.productos || [];
-    } catch (error) {
-      console.error('Error productos:', error);
-      return [];
-    }
-  }
 };

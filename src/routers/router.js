@@ -1,21 +1,22 @@
 import { loadView } from '../views/viewLoader.js';
 
 // Importar controladores
-import { authController } from '../controllers/authController.js';
+import { authenticateUser } from '../controllers/authController.js';
 import { inventarioController } from '../controllers/inventarioController.js';
 import { productoNuevoController } from '../controllers/productoNuevoController.js';
 import { pedidosController } from '../controllers/pedidosController.js'; // Solo una vez
 import { albaranesController } from '../controllers/albaranesController.js';    
+import { recepcionController } from '../controllers/recepcionController.js';
 
 const routes = {
     '': { view: 'landing', controller: null },
-    '#login': { view: 'login', controller: authController },
+    '#login': { view: 'login', controller: authenticateUser },
     '#inicio': { view: 'inicio', controller: null },
     '#almacen': { view: 'almacen', controller: inventarioController },
     '#productoNuevo': { view: 'productoNuevo', controller: productoNuevoController },
     '#pedidos': { view: 'pedidos', controller: pedidosController }, // Ahora cargará el controlador
     '#albaranes': { view: 'albaranes', controller: albaranesController },
-    '#recepcion': { view: 'recepcionPedidos', controller: null },
+    '#recepcion': { view: 'recepcionPedidos', controller: recepcionController },
 };
 
 export const router = async () => {
