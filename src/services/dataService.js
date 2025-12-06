@@ -1,68 +1,115 @@
-// Ruta al archivo JSON (relativa al index.html)
-const DATA_URL = './assets/data/db.json';
+const API_URL = 'http://localhost:3000';
 
 export const dataService = {
-
-    // =================================================
-    // MÉTODO GENÉRICO (Para evitar repetir código)
-    // =================================================
-    _fetchAll: async () => {
+    // --- USUARIOS ---
+    login: async (username, password) => {
         try {
-            const response = await fetch(DATA_URL);
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            const data = await response.json();
-            return data;
+            const response = await fetch(`${API_URL}/usuarios?username=${username}&password=${password}`);
+            const users = await response.json();
+            return users.length > 0 ? users[0] : null;
         } catch (error) {
-            console.error("Error crítico cargando datos:", error);
+            console.error('Error login:', error);
             return null;
         }
     },
 
-    // =================================================
-    // MÉTODOS ESPECÍFICOS POR ENTIDAD
-    // =================================================
-
-    // 1. PRODUCTOS (Usado en Almacén y para precios en Albaranes)
-    getAllProductos: async () => {
-        const data = await dataService._fetchAll();
-        return data && data.productos ? data.productos : [];
+    // --- PRODUCTOS ---
+    getProductos: async () => {
+        // TRUCO ANTI-CACHÉ: 
+        // Añadimos &t=${Date.now()} para que el navegador NO use datos viejos de la memoria.
+        // _expand trae los objetos completos de categoria y proveedor.
+        const url = `${API_URL}/productos?_expand=categoria&_expand=proveedor&t=${Date.now()}`;
+        const response = await fetch(url);
+        return await response.json();
     },
 
-    // 2. CATEGORÍAS (Usado en Almacén para los filtros)
-    getAllCategorias: async () => {
-        const data = await dataService._fetchAll();
-        return data && data.categorias ? data.categorias : [];
+    createProducto: async (producto) => {
+        const response = await fetch(`${API_URL}/productos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(producto)
+        });
+        return await response.json();
     },
 
-    // 3. PROVEEDORES (Usado en TODO: Almacén, Pedidos, Albaranes)
-    getAllProveedores: async () => {
-        const data = await dataService._fetchAll();
-        return data && data.proveedores ? data.proveedores : [];
+    updateProducto: async (id, datosParciales) => {
+        try {
+            // USAMOS PATCH: Solo modifica los campos que enviamos, respeta el resto.
+            const response = await fetch(`${API_URL}/productos/${id}`, {
+                method: 'PATCH', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosParciales)
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Error actualizando:', error);
+            return null;
+        }
     },
 
-    // 4. PEDIDOS (Usado en la sección Pedidos)
-    getAllPedidos: async () => {
-        const data = await dataService._fetchAll();
-        return data && data.pedidos ? data.pedidos : [];
+    // --- CATEGORÍAS Y PROVEEDORES ---
+    getCategorias: async () => {
+        const response = await fetch(`${API_URL}/categorias`);
+        return await response.json();
     },
 
-    // 5. ALBARANES (Usado en la sección Albaranes)
-    getAllAlbaranes: async () => {
-        const data = await dataService._fetchAll();
-        return data && data.albaranes ? data.albaranes : [];
+    getProveedores: async () => {
+        const response = await fetch(`${API_URL}/proveedores`);
+        return await response.json();
     },
 
-    // 6. USUARIOS (Usado para el Login)
-    getAllUsuarios: async () => {
-        const data = await dataService._fetchAll();
-        return data && data.usuarios ? data.usuarios : [];
+    createProveedor: async (proveedor) => {
+        const response = await fetch(`${API_URL}/proveedores`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(proveedor)
+        });
+        return await response.json();
     },
 
-    // 7. RECETAS (Si lo necesitas en el futuro)
-    getAllRecetas: async () => {
-        const data = await dataService._fetchAll();
-        return data && data.recetas ? data.recetas : [];
+    // --- PEDIDOS Y ALBARANES ---
+getAllPedidos: async () => {
+    try {
+      const response = await fetch('assets/data/db.json');
+      const data = await response.json();
+      return data.pedidos;
+    } catch (error) {
+      console.error('Error pedidos:', error);
+      return [];
     }
+  },
+
+  getAllProveedores: async () => {
+    try {
+      const response = await fetch('assets/data/db.json');
+      const data = await response.json();
+      return data.proveedores;
+    } catch (error) {
+      console.error('Error proveedores:', error);
+      return [];
+    }
+  },
+
+  // --- AGREGA ESTO SI NO LO TIENES ---
+  getAllAlbaranes: async () => {
+    try {
+      const response = await fetch('assets/data/db.json');
+      const data = await response.json();
+      return data.albaranes || [];
+    } catch (error) {
+      console.error('Error albaranes:', error);
+      return [];
+    }
+  },
+
+  getAllProductos: async () => {
+    try {
+      const response = await fetch('assets/data/db.json');
+      const data = await response.json();
+      return data.productos || [];
+    } catch (error) {
+      console.error('Error productos:', error);
+      return [];
+    }
+  }
 };

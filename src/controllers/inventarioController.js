@@ -1,185 +1,233 @@
 import { dataService } from '../services/dataService.js';
 
-// Variables de estado
-let productos = [];
-let categorias = [];
-let proveedores = [];
-
-export const inventarioController = {
+export const inventarioController = async () => {
+    // --- REFERENCIAS AL DOM ---
+    const tabla = document.querySelector('#tabla-inventario tbody');
+    const btnNuevo = document.getElementById('btn-abrir-modal-producto');
     
-    // Método de inicio
-    init: async () => {
-        console.log("Controlador de Inventario INICIADO");
+    // Filtros
+    const inputBusqueda = document.getElementById('filtro-producto-nombre');
+    const selectCategoriaFiltro = document.getElementById('filtro-producto-categoria');
+    const btnFiltrar = document.getElementById('btn-filtrar-inventario');
+    const btnOrdenar = document.getElementById('btn-ordenar-precio');
 
-        // 1. Cargar datos en paralelo para mayor velocidad
-        // Necesitamos categorías y proveedores para rellenar nombres en la tabla
-        const data = await Promise.all([
-            dataService.getAllProductos(),
-            dataService.getAllCategorias ? dataService.getAllCategorias() : fetchCategoriasFallback(),
-            dataService.getAllProveedores()
-        ]);
+    // Modal y Formulario
+    const modal = document.getElementById('producto-modal');
+    const formModal = document.getElementById('producto-form');
+    const btnCerrarModal = document.querySelector('.close-button');
+    const btnCancelarModal = document.getElementById('btn-cancelar-producto');
+    
+    // Inputs del Formulario Modal
+    const inpId = document.getElementById('producto-id');
+    const inpNombre = document.getElementById('producto-nombre');
+    const inpSku = document.getElementById('producto-sku');
+    const inpStock = document.getElementById('producto-stock');
+    const inpStockMin = document.getElementById('producto-stock-minimo');
+    const inpPrecio = document.getElementById('producto-precio');
+    const inpUnidad = document.getElementById('producto-unidad-medida');
+    const txtDesc = document.getElementById('producto-descripcion');
+    
+    // Selects del Modal
+    const selCatModal = document.getElementById('producto-categoria');
+    const selProvModal = document.getElementById('producto-proveedor');
 
-        productos = data[0];
-        categorias = data[1];
-        proveedores = data[2];
+    let todosLosProductos = [];
 
-        // 2. Renderizar inicial
-        renderizarFiltros();
-        renderizarTabla(productos);
-
-        // 3. Configurar eventos (Búsqueda y Filtros)
-        configurarListeners();
-    }
-};
-
-// --- FUNCIONES DE AYUDA ---
-
-// Por si no tienes getAllCategorias en dataService
-async function fetchCategoriasFallback() {
-    try {
-        const resp = await fetch('assets/data/db.json');
-        const json = await resp.json();
-        return json.categorias || [];
-    } catch (e) { return []; }
-}
-
-// --- RENDERIZADO ---
-
-function renderizarTabla(listaProductos) {
-    const tbody = document.getElementById('tablaProductosBody');
-    if (!tbody) return;
-
-    tbody.innerHTML = '';
-
-    if (listaProductos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No se encontraron productos.</td></tr>';
-        return;
+    // ============================================================
+    // 1. CARGA INICIAL
+    // ============================================================
+    if (tabla) {
+        tabla.innerHTML = '<tr><td colspan="9">Cargando inventario...</td></tr>';
+        try {
+            await cargarFiltrosCabecera();
+            // TRUCO: Cargar selects del modal al inicio para asegurar que existen
+            await cargarSelectsDelModal(); 
+            todosLosProductos = await dataService.getProductos();
+            renderizarTabla(todosLosProductos);
+        } catch (error) {
+            console.error("Error inicial:", error);
+        }
     }
 
-    listaProductos.forEach(prod => {
-        // Cruzar datos: Obtener nombres de categoría y proveedor
-        const cat = categorias.find(c => c.id == prod.categoriaId)?.nombre || 'Sin Cat.';
-        const prov = proveedores.find(p => p.id == prod.proveedorId)?.nombre || 'Sin Prov.';
+    // ============================================================
+    // 2. RENDERIZAR TABLA
+    // ============================================================
+    function renderizarTabla(lista) {
+        tabla.innerHTML = '';
+        if (!lista || lista.length === 0) {
+            tabla.innerHTML = '<tr><td colspan="9" align="center">No hay productos disponibles</td></tr>';
+            return;
+        }
         
-        // Calcular estado del stock
-        let stockClass = 'ok';
-        let stockText = 'OK';
-        
-        if (prod.stock <= 0) {
-            stockClass = 'agotado';
-            stockText = 'AGOTADO';
-        } else if (prod.stock <= prod.stockMinimo) {
-            stockClass = 'bajo';
-            stockText = 'BAJO';
+        lista.forEach(prod => {
+            const catName = prod.categoria ? prod.categoria.nombre : '-';
+            const provName = prod.proveedor ? prod.proveedor.nombre : '-';
+            const stockStyle = prod.stock <= prod.stockMinimo ? 'color:red; font-weight:bold' : '';
+
+            tabla.innerHTML += `
+                <tr>
+                    <td>${prod.id}</td>
+                    <td><strong>${prod.nombre}</strong></td>
+                    <td>${prod.codigoBarras || '-'}</td>
+                    <td style="${stockStyle}">${prod.stock}</td>
+                    <td>${prod.stockMinimo}</td>
+                    <td>${prod.precio} €</td>
+                    <td>${catName}</td>
+                    <td>${provName}</td>
+                    <td>
+                        <button class="btn-primary-small btn-editar" data-id="${prod.id}">✏️</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.querySelectorAll('.btn-editar').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = e.target.getAttribute('data-id');
+                abrirModalParaEditar(id);
+            });
+        });
+    }
+
+    // ============================================================
+    // 3. ABRIR MODAL (Aquí asignamos los valores)
+    // ============================================================
+    async function abrirModalParaEditar(idProducto) {
+        const producto = todosLosProductos.find(p => p.id == idProducto);
+        if (!producto) return;
+
+        // Aseguramos que los selects tengan opciones
+        if (selCatModal.options.length <= 1 || selProvModal.options.length <= 1) {
+            await cargarSelectsDelModal();
         }
 
-        // Imagen por defecto si no hay
-        const imagenUrl = prod.imagen ? `assets/images/${prod.imagen}` : 'assets/images/placeholder.png'; // Asegúrate de tener una imagen placeholder
+        // Rellenar Campos Básicos
+        inpId.value = producto.id;
+        inpNombre.value = producto.nombre;
+        inpSku.value = producto.codigoBarras || '';
+        inpStock.value = producto.stock;
+        inpStockMin.value = producto.stockMinimo;
+        inpPrecio.value = producto.precio;
+        inpUnidad.value = producto.unidadMedida || '';
+        txtDesc.value = producto.descripcion || '';
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><img src="${imagenUrl}" alt="prod" class="img-thumb" onerror="this.src='https://via.placeholder.com/40'"></td>
-            <td>
-                <strong>${prod.nombre}</strong>
-                <span class="text-small">Ref: ${prod.codigoBarras || 'N/A'}</span>
-            </td>
-            <td>${cat}</td>
-            <td>${prov}</td>
-            <td style="text-align: right;" class="precio-cell">${parseFloat(prod.precio).toFixed(2)} €</td>
-            <td style="text-align: center; font-weight: bold;">${prod.stock}</td>
-            <td style="text-align: center;">
-                <span class="stock-badge ${stockClass}">${stockText}</span>
-            </td>
-            <td>
-                <div class="acciones-group">
-                    <button class="btn-icon edit" title="Editar" onclick="alert('Editar ID: ${prod.id}')">✏️</button>
-                    <button class="btn-icon delete" title="Eliminar" onclick="alert('Eliminar ID: ${prod.id}')">🗑️</button>
-                </div>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
+        // Rellenar SELECTS (Conversión Crítica)
+        // 1. Obtenemos el ID. Si no existe en categoriaId, lo buscamos en el objeto expandido.
+        const catId = producto.categoriaId || (producto.categoria ? producto.categoria.id : "");
+        const provId = producto.proveedorId || (producto.proveedor ? producto.proveedor.id : "");
 
-function renderizarFiltros() {
-    // Rellenar Select de Categorías
-    const selectCat = document.getElementById('filtroCategoria');
-    if (selectCat) {
-        selectCat.innerHTML = '<option value="">Todas las categorías</option>';
-        categorias.forEach(c => {
-            selectCat.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+        // 2. Convertimos a String porque el 'value' del HTML Option es texto.
+        selCatModal.value = String(catId);
+        selProvModal.value = String(provId);
+
+        console.log(`Abriendo ID ${producto.id}. Cat: ${catId}, Prov: ${provId}`);
+
+        document.getElementById('modal-title').innerText = `Editar Producto #${producto.id}`;
+        modal.style.display = 'block';
+    }
+
+    // ============================================================
+    // 4. GUARDAR CAMBIOS (Aquí estaba el fallo)
+    // ============================================================
+    if (formModal) {
+        formModal.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Depuración: Ver qué valores tienen los selects en este momento
+            console.log("Valor Select Categoria:", selCatModal.value);
+            console.log("Valor Select Proveedor:", selProvModal.value);
+
+            // Validar
+            if (!selCatModal.value || !selProvModal.value) {
+                alert("Selecciona Categoría y Proveedor antes de guardar.");
+                return;
+            }
+
+            const datosAUpdatear = {
+                nombre: inpNombre.value,
+                codigoBarras: inpSku.value,
+                stock: parseInt(inpStock.value),
+                stockMinimo: parseInt(inpStockMin.value),
+                precio: parseFloat(inpPrecio.value),
+                unidadMedida: inpUnidad.value,
+                descripcion: txtDesc.value,
+                
+                // IMPORTANTE: Volvemos a usar parseInt.
+                // Tu Solomillo (que funciona) usa números (categoriaId: 3).
+                // Si enviamos "3" (string), se rompe la relación.
+                categoriaId: parseInt(selCatModal.value),
+                proveedorId: parseInt(selProvModal.value)
+            };
+
+            console.log("Enviando PATCH...", datosAUpdatear);
+
+            const res = await dataService.updateProducto(inpId.value, datosAUpdatear);
+
+            if (res) {
+                alert('✅ Guardado');
+                modal.style.display = 'none';
+                
+                // Recarga forzosa
+                tabla.innerHTML = '<tr><td colspan="9" align="center">Actualizando...</td></tr>';
+                todosLosProductos = await dataService.getProductos();
+                renderizarTabla(todosLosProductos);
+            } else {
+                alert('❌ Error al guardar');
+            }
         });
     }
 
-    // Rellenar Select de Proveedores
-    const selectProv = document.getElementById('filtroProveedor');
-    if (selectProv) {
-        selectProv.innerHTML = '<option value="">Todos los proveedores</option>';
-        proveedores.forEach(p => {
-            selectProv.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
-        });
+    const cerrarModal = () => { modal.style.display = 'none'; };
+    if(btnCerrarModal) btnCerrarModal.addEventListener('click', cerrarModal);
+    if(btnCancelarModal) btnCancelarModal.addEventListener('click', cerrarModal);
+
+
+    // ============================================================
+    // 5. CARGAR SELECTS
+    // ============================================================
+    async function cargarFiltrosCabecera() {
+        if(selectCategoriaFiltro) {
+            const cats = await dataService.getCategorias();
+            selectCategoriaFiltro.innerHTML = '<option value="">Todas las Categorías</option>' + 
+                cats.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+        }
     }
-}
 
-// --- EVENTOS ---
+    async function cargarSelectsDelModal() {
+        const cats = await dataService.getCategorias();
+        const provs = await dataService.getProveedores();
 
-function configurarListeners() {
-    const inputBuscar = document.getElementById('busquedaNombre');
-    const filtroCat = document.getElementById('filtroCategoria');
-    const filtroProv = document.getElementById('filtroProveedor');
-    const filtroStock = document.getElementById('filtroStock');
-    const btnLimpiar = document.getElementById('btnLimpiar');
-    const btnNuevo = document.getElementById('btnNuevoProducto');
+        if (selCatModal) {
+            selCatModal.innerHTML = '<option value="">Selecciona...</option>' + 
+                cats.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+        }
+        if (selProvModal) {
+            selProvModal.innerHTML = '<option value="">Selecciona...</option>' + 
+                provs.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+        }
+    }
 
-    const filtrarDatos = () => {
-        const texto = inputBuscar.value.toLowerCase();
-        const catId = filtroCat.value;
-        const provId = filtroProv.value;
-        const stockStatus = filtroStock.value; // bajo, agotado, ok
-
-        const filtrados = productos.filter(p => {
-            // 1. Texto (Nombre o Código)
-            const matchTexto = p.nombre.toLowerCase().includes(texto) || 
-                               (p.codigoBarras && p.codigoBarras.includes(texto));
-
-            // 2. Categoría
-            const matchCat = catId === "" || p.categoriaId == catId;
-
-            // 3. Proveedor
-            const matchProv = provId === "" || p.proveedorId == provId;
-
-            // 4. Estado Stock
-            let matchStock = true;
-            if (stockStatus === 'agotado') matchStock = p.stock <= 0;
-            else if (stockStatus === 'bajo') matchStock = p.stock > 0 && p.stock <= p.stockMinimo;
-            else if (stockStatus === 'ok') matchStock = p.stock > p.stockMinimo;
-
-            return matchTexto && matchCat && matchProv && matchStock;
+    // ============================================================
+    // 6. FILTROS
+    // ============================================================
+    function aplicarFiltros() {
+        const texto = inputBusqueda.value.toLowerCase().trim();
+        const catId = selectCategoriaFiltro.value;
+        const filtrados = todosLosProductos.filter(prod => {
+            const nombreOk = prod.nombre.toLowerCase().includes(texto);
+            const catOk = catId === "" || prod.categoriaId == catId;
+            return nombreOk && catOk;
         });
-
         renderizarTabla(filtrados);
-    };
-
-    // Listeners
-    if(inputBuscar) inputBuscar.addEventListener('input', filtrarDatos);
-    if(filtroCat) filtroCat.addEventListener('change', filtrarDatos);
-    if(filtroProv) filtroProv.addEventListener('change', filtrarDatos);
-    if(filtroStock) filtroStock.addEventListener('change', filtrarDatos);
-
-    if(btnLimpiar) {
-        btnLimpiar.addEventListener('click', () => {
-            inputBuscar.value = '';
-            filtroCat.value = '';
-            filtroProv.value = '';
-            filtroStock.value = '';
-            renderizarTabla(productos);
-        });
     }
 
-    // Navegación al botón de Nuevo Producto
-    if(btnNuevo) {
-        btnNuevo.addEventListener('click', () => {
-            window.location.hash = '#productoNuevo'; // Asegúrate de tener esta ruta en el router
-        });
-    }
-}
+    if (inputBusqueda) inputBusqueda.addEventListener('input', aplicarFiltros);
+    if (selectCategoriaFiltro) selectCategoriaFiltro.addEventListener('change', aplicarFiltros);
+    if (btnFiltrar) btnFiltrar.addEventListener('click', aplicarFiltros);
+    if (btnOrdenar) btnOrdenar.addEventListener('click', () => {
+        todosLosProductos.sort((a, b) => a.precio - b.precio);
+        aplicarFiltros();
+    });
+    if (btnNuevo) btnNuevo.addEventListener('click', () => { window.location.hash = '#productoNuevo'; });
+};
+
